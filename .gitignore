@@ -1,0 +1,11 @@
+venv
+todo.md
+temp*
+*.log
+*.example
+references.bib
+**/__pycache__/
+**/*.pyc
+*.i
+*.ii
+conjecture.md
