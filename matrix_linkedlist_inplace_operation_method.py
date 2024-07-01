@@ -4,7 +4,7 @@ from util.compare import compare, gr
 
 
 class MatrixLinkedList:
-    def __init__(self, matrix, dtype=cp.float32):
+    def __init__(self, matrix, dtype=None):
         self.matrix = matrix.copy()
         self.dtype = dtype
         self.shape = matrix.shape
