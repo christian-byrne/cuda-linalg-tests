@@ -1,6 +1,6 @@
 import cupy as cp
 from cupyx.profiler import time_range, benchmark
-from typing import List, Union, TypeVar, Any, Tuple, Callable
+from typing import Any, Tuple, Callable
 
 from util.results_class import Results
 
@@ -14,8 +14,10 @@ def gr(n=512, ct=1):
     )
 
 
-def compare(*fns: FuncInstructions):
-    results = Results()
+def compare(*fns: FuncInstructions, title: str = "Results"):
+    results = Results(
+        title=f"{title} (n={fns[0][2]}) (size={fns[1][1][0].shape[0]}x{fns[1][1][0].shape[1]})"
+    )
     for fn, args, n_repeat in fns:
         with time_range(fn.__name__):
             results.append(benchmark(fn, args, n_repeat=n_repeat))

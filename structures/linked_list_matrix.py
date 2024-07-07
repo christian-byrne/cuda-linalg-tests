@@ -13,17 +13,44 @@ class MatrixLinkedList:
     def convert_to_queues(self):
         return deque(deque(row) for row in self.matrix)
 
-    def __iadd__(self, other):
+    def inplace_op(self, other, op):
+        """NOTE: Adds speed overhead compared with defining inplace ops directly."""
         while other.queues:
             c = self.queues.popleft()
             c_other = other.queues.popleft()
             while c_other:
                 d = c.popleft()
                 d_other = c_other.popleft()
-                c.append(d + d_other)
+                c.append(d.__getattribute__(op)(d_other))
 
             self.queues.append(c)
 
+    def __imul__(self, other):
+        self.inplace_op(other, '__mul__')
+        return self
+    
+    def __itruediv__(self, other):
+        self.inplace_op(other, '__truediv__')
+        return self
+    
+    def __ifloordiv__(self, other):
+        self.inplace_op(other, '__floordiv__')
+        return self
+    
+    def __imod__(self, other):
+        self.inplace_op(other, '__mod__')
+        return self
+    
+    def __ipow__(self, other):
+        self.inplace_op(other, '__pow__')
+        return self
+
+    def __isub__(self, other):
+        self.inplace_op(other, '__sub__')
+        return self
+
+    def __iadd__(self, other):
+        self.inplace_op(other, '__add__')
         return self
 
     def convert_to_matrix(self):

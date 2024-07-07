@@ -5,11 +5,13 @@ from rich.console import Console
 
 
 class Results:
-    def __init__(self, results: List[_PerfCaseResult] = None):
+    def __init__(self, results: List[_PerfCaseResult] = None, title: str = "Results"):
         if results:
             self.res: List[_PerfCaseResult] = results
         else:
             self.res = []
+
+        self.title = title
 
         self.console = Console()
 
@@ -28,9 +30,8 @@ class Results:
             er = min_ = max_ = ""
             table.add_row(name, device_name, mean_)
 
-    @staticmethod
-    def create_table(title: str = "Results"):
-        table = Table(title=title)
+    def create_table(self):
+        table = Table(title=self.title)
         table.add_column("Method Name", justify="center", style="cyan")
         table.add_column("Device", justify="center", style="cyan")
         table.add_column("Mean Time", justify="center", style="cyan")
