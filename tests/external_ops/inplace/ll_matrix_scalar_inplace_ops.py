@@ -2,13 +2,13 @@ from util.compare import compare, gr
 from structures.linked_list_matrix import MatrixLinkedList
 import random
 
-def compare_external_inplace(op, mn=256):
-    # TODO: 
-    # validate_works(op)
+
+def compare_external_inplace(op, mn=256, scalar_range=10):
+    validate_works(op)
 
     matrix = gr(mn, 1)
     lmatrix = MatrixLinkedList(matrix)
-    scalar = int(random.random() * 10) 
+    scalar = int(random.random() * scalar_range)
 
     def op_inplace_external_linkedlist_matrix(matrix1, scalar):
         matrix1.__getattribute__(op)(scalar)
@@ -24,26 +24,28 @@ def compare_external_inplace(op, mn=256):
 
 
 def validate_works(op):
-    matrices = gr(4, 2)
-    lmatrices = [MatrixLinkedList(matrix) for matrix in matrices]
+    matrix = gr(4, 1)
+    lmatrix = MatrixLinkedList(matrix)
+    scalar = int(random.random() * 10)
 
     def assert_same_result():
-        orig_1 = matrices[0].copy()
-        orig_2 = matrices[1].copy()
-        matrices[0].__getattribute__(op)(matrices[1])
-        lmatrices[0].__getattribute__(op)(lmatrices[1])
+        orig_1 = matrix.copy()
+        orig_scalar = scalar
 
-        bool_m1 = matrices[0] == lmatrices[0].convert_to_cp_array()
-        if not bool_m1.all():
-            print(bool_m1)
+        matrix.__getattribute__(op)(scalar)
+        lmatrix.__getattribute__(op)(scalar)
+
+        bool_termequality_matrix_ = matrix == lmatrix.convert_to_cp_array()
+        if not bool_termequality_matrix_.all():
+            print(bool_termequality_matrix_)
             print("Matrix")
-            print(matrices[0])
+            print(matrix)
             print("LMatrix")
-            print(lmatrices[0].convert_to_cp_array())
-            print("original matrix 1")
+            print(lmatrix.convert_to_cp_array())
+            print("original Matrix")
             print(orig_1)
-            print("original matrix 2")
-            print(orig_2)
+            print("original scalar")
+            print(orig_scalar)
             raise ValueError("Not same result")
 
     assert_same_result()

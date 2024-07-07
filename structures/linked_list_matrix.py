@@ -1,6 +1,8 @@
 from collections import deque
 import cupy as cp
+
 # import cProfile
+from functools import lru_cache
 
 
 class MatrixLinkedList:
@@ -13,17 +15,16 @@ class MatrixLinkedList:
     def convert_to_queues(self):
         return deque(deque(row) for row in self.matrix)
 
+    @lru_cache(maxsize=32)
+    def create_scalar_linkedlist_matrix(self, scalar):
+        """For scalar operations, create a linked list matrix from the scalar and cache it."""
+        scalar_cupy = cp.array(scalar)
+        like_matrix = cp.full_like(self.matrix, scalar_cupy)
+        return MatrixLinkedList(like_matrix)
+
     def inplace_op_scalar(self, scalar, op):
-        new_queues = deque()
-        # NOTE: not creating a new_queues, and instead popping/appending to current self.queues is 400_000 times slower
-        # scalar = type(self.queues[0][0])(scalar)
-        while self.queues:
-            c = self.queues.popleft()
-            new_c = deque()
-            while c:
-                d = c.popleft()
-                new_c.append(d.__getattribute__(op)(scalar))
-            new_queues.append(new_c)
+        scalar_matrix = self.create_scalar_linkedlist_matrix(scalar)
+        self.inplace_op_closed(scalar_matrix, op)
 
     def inplace_op_closed(self, other, op):
         """NOTE: Adds speed overhead compared with defining inplace ops directly."""

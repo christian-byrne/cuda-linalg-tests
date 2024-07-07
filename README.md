@@ -94,6 +94,14 @@ $\forall A \in X, n(P(A, ⊕) - P(U(A), ⊕)) - T(A) > 0 \implies$ The matrix sh
 
 ## Inplace Scalar Operations Comparisons
 
+To achieve the speedup with scalar operations, scalars are converted to linked list matrices and cached.
+
+Thus, there is added $U(α) \cdot min(c, R)$, where $c$ is the cache size of the conversion method and R is the range of $α$.
+
+$\forall A \in X, n(P(A, ⊕) - P(U(A), ⊕)) - T(A) - U(α) \cdot min(c, R) > 0 \implies$ The matrix should be converted to a linked list for $n$ operations.
+
+<!-- It's similar to current implementation with JIT, but tests indicate divergence. -->
+
 ### `addition`
 
 > <details>
