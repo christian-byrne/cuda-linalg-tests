@@ -1,23 +1,25 @@
 from util.compare import compare, gr
 from structures.linked_list_matrix import MatrixLinkedList
+import random
 
+def compare_external_inplace(op, mn=256):
+    # TODO: 
+    # validate_works(op)
 
-def compare_inplace(op, mn=256, n=2):
-    validate_works(op)
+    matrix = gr(mn, 1)
+    lmatrix = MatrixLinkedList(matrix)
+    scalar = int(random.random() * 10) 
 
-    matrices = gr(mn, n)
-    lmatrices = [MatrixLinkedList(matrix) for matrix in matrices]
+    def op_inplace_external_linkedlist_matrix(matrix1, scalar):
+        matrix1.__getattribute__(op)(scalar)
 
-    def op_inplace_linkedlist_matrix(matrix1, matrix2):
-        matrix1.__getattribute__(op)(matrix2)
-
-    def op_inplace_matrix(matrix1, matrix2):
-        matrix1.__getattribute__(op)(matrix2)
+    def op_inplace_external_matrix(matrix1, scalar):
+        matrix1.__getattribute__(op)(scalar)
 
     return compare(
-        (op_inplace_linkedlist_matrix, tuple(lmatrices), 1_000),
-        (op_inplace_matrix, tuple(matrices), 1_000),
-        title=f"{op} Inplace Comparison",
+        (op_inplace_external_linkedlist_matrix, tuple([lmatrix, scalar]), 500),
+        (op_inplace_external_matrix, tuple([matrix, scalar]), 500),
+        title=f"{op} (Scalar) Inplace Comparison",
     ).p()
 
 
@@ -30,7 +32,6 @@ def validate_works(op):
         orig_2 = matrices[1].copy()
         matrices[0].__getattribute__(op)(matrices[1])
         lmatrices[0].__getattribute__(op)(lmatrices[1])
-        # lmatrices[0] += lmatrices[1]
 
         bool_m1 = matrices[0] == lmatrices[0].convert_to_cp_array()
         if not bool_m1.all():
